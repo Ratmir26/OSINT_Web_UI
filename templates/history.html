@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h2><i class="bi bi-clock-history"></i> История запросов</h2>
+{% if records %}
+<div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Запрос</th>
+                <th>Модуль</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in records %}
+            <tr>
+                <td>{{ r[0] }}</td>
+                <td>{{ r[1] }}</td>
+                <td>{{ r[2] }}</td>
+                <td>{{ r[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">История пуста. Сделайте первый запрос.</div>
+{% endif %}
+{% endblock %}

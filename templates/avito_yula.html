@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h2><i class="bi bi-tag"></i> Avito / Юла</h2>
+<form method="post" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="query" class="form-control form-control-lg" placeholder="Поисковый запрос..." value="{{ query }}" required autofocus>
+        <button class="btn btn-primary btn-lg" type="submit"><i class="bi bi-search"></i> Искать</button>
+    </div>
+</form>
+{% if query %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header"><i class="bi bi-shop"></i> Avito</div>
+            <div class="card-body">
+                {% if avito_result %}
+                    {% if avito_result is mapping and avito_result.get('error') %}
+                        <div class="alert alert-danger">{{ avito_result.error }}</div>
+                    {% else %}
+                        <pre class="mb-0">{{ avito_result }}</pre>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted">Нет данных</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">Юла</div>
+            <div class="card-body">
+                {% if yula_result %}
+                    {% if yula_result is mapping and yula_result.get('error') %}
+                        <div class="alert alert-danger">{{ yula_result.error }}</div>
+                    {% else %}
+                        <pre class="mb-0">{{ yula_result }}</pre>
+                    {% endif %}
+                {% else %}
+                    <p class="text-muted">Нет данных</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

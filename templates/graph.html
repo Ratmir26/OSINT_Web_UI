@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2><i class="bi bi-diagram-3"></i> Граф связей</h2>
+<form method="post" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="query" class="form-control form-control-lg" placeholder="Компания или человек..." value="{{ query }}" required autofocus>
+        <button class="btn btn-primary btn-lg" type="submit"><i class="bi bi-search"></i> Построить</button>
+    </div>
+</form>
+{% if image_url %}
+<div class="card">
+    <div class="card-header">Граф связей: {{ query }}</div>
+    <div class="card-body text-center">
+        <img src="{{ image_url }}" class="img-fluid" alt="Граф связей">
+    </div>
+</div>
+{% elif error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+{% endblock %}
