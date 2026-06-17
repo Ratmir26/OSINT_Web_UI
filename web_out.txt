@@ -1,3 +1,0 @@
-OSINT Web UI запущен: http://localhost:5000
- * Serving Flask app 'app'
- * Debug mode: on
