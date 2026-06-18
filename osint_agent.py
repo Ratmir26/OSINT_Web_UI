@@ -9,10 +9,7 @@ import time
 import requests
 from datetime import datetime
 from urllib.parse import quote_plus
-from dotenv import load_dotenv
 from ddgs import DDGS
-
-load_dotenv()
 
 HEADERS = {
     "User-Agent": (

@@ -31,14 +31,6 @@ cd OSINT_Web_UI
 pip install -r requirements.txt
 ```
 
-## Настройка
-
-Создайте `.env` в корне проекта (опционально, требуется только для YouTube API):
-
-```env
-YOUTUBE_API_KEY=ваш_ключ_youtube_api
-```
-
 ## Запуск
 
 ```bash

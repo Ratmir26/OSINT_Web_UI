@@ -5,6 +5,7 @@ import threading
 from datetime import datetime
 from io import BytesIO
 
+import mistune
 from flask import Flask, render_template, request, send_file, url_for
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -64,6 +65,7 @@ def index():
 @app.route("/search", methods=["GET", "POST"])
 def search():
     result = None
+    result_html = None
     query = ""
     if request.method == "POST":
         query = request.form.get("query", "").strip()
@@ -72,10 +74,12 @@ def search():
                 filepath = run_osint(query)
                 with open(filepath, "r", encoding="utf-8") as f:
                     result = f.read()
+                result_html = mistune.html(result)
                 log_history(query, "search", filepath)
             except Exception as e:
                 result = f"Ошибка: {e}"
-    return render_template("search.html", query=query, result=result)
+                result_html = f"<div class='alert alert-danger'>{e}</div>"
+    return render_template("search.html", query=query, result=result, result_html=result_html)
 
 
 @app.route("/phone", methods=["GET", "POST"])

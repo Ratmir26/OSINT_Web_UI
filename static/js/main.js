@@ -9,4 +9,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function() {
+            const btn = this.querySelector('button[type="submit"]');
+            if (btn) {
+                const query = this.querySelector('[name="query"]');
+                if (query && query.value.trim()) {
+                    document.getElementById('loading-overlay').classList.add('active');
+                }
+            }
+        });
+    });
 });
