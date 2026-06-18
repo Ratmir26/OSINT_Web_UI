@@ -7,6 +7,7 @@ from io import BytesIO
 
 import mistune
 from flask import Flask, render_template, request, send_file, url_for
+from flask_socketio import SocketIO, emit
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -28,6 +29,7 @@ from modules.history import init_db, add_search, get_history
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 init_db(HISTORY_DB)
 
@@ -329,6 +331,23 @@ def mass():
     return render_template("mass.html", results=results)
 
 
+@socketio.on("search_request")
+def handle_search(data):
+    query = data.get("query", "").strip()
+    if not query:
+        emit("search_error", {"error": "Пустой запрос"})
+        return
+    try:
+        filepath = run_osint(query, progress_callback=lambda msg: emit("search_progress", {"message": msg}))
+        with open(filepath, "r", encoding="utf-8") as f:
+            result = f.read()
+        result_html = mistune.html(result)
+        emit("search_result", {"html": result_html, "query": query, "filepath": filepath})
+        log_history(query, "search", filepath)
+    except Exception as e:
+        emit("search_error", {"error": str(e)})
+
+
 if __name__ == "__main__":
     print(f"OSINT Web UI запущен: http://localhost:5000")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    socketio.run(app, debug=True, host="0.0.0.0", port=5000)

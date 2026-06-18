@@ -454,27 +454,32 @@ def generate_report(target: str, data: dict) -> str:
     return "\n".join(lines)
 
 
-def run_osint(target: str, return_data: bool = False):
+def run_osint(target: str, return_data: bool = False, progress_callback=None):
+    cb = progress_callback or (lambda msg: None)
     log("=" * 60, "INFO")
-    log(f"Запуск OSINT-агента для: {target}", "INFO")
+    cb("Запуск OSINT-агента для: " + target)
     log("=" * 60, "INFO")
 
     data = {}
 
+    cb("[1/5] Поиск в интернете (DuckDuckGo)...")
     log("\n[1/5] Поиск в интернете (DuckDuckGo)...", "INFO")
     web_results = web_search(target, max_results=10)
     data["web"] = web_results
 
+    cb("[2/5] Поиск в 2GIS...")
     log("\n[2/5] Поиск в 2GIS...", "INFO")
     gis_data = search_2gis(target)
     if gis_data:
         data["2gis"] = gis_data
 
+    cb("[3/5] Поиск в Яндекс.Картах...")
     log("\n[3/5] Поиск в Яндекс.Картах...", "INFO")
     yndx_data = search_yandex_maps(target)
     if yndx_data:
         data["yandex"] = yndx_data
 
+    cb("[4/5] Анализ веб-сайта...")
     log("\n[4/5] Анализ веб-сайта...", "INFO")
     website_url = ""
     if gis_data and gis_data.get("website"):
@@ -512,10 +517,12 @@ def run_osint(target: str, return_data: bool = False):
         data["webpage"] = web_data
         data["website_url"] = website_url
 
+    cb("[5/5] Поиск социальных профилей...")
     log("\n[5/5] Поиск социальных профилей...", "INFO")
     socials = search_social_profiles(target)
     data["socials"] = socials
 
+    cb("Генерация отчёта...")
     log("\n" + "=" * 60, "INFO")
     log("Генерация отчёта...", "INFO")
     report = generate_report(target, data)
